@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Videos de YouTube</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Buscador de Videos de YouTube</h1>
+        <input type="text" id="searchInput" placeholder="Buscar videos en YouTube">
+        <button id="searchButton">Buscar</button>
+        <div id="videoResults"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        // Clave de API de YouTube (reemplaza 'TU_LLAVE_API' con tu propia clave)
+        var apiKey = 'AIzaSyBpc14qSMkgShb4QyjXGMoqUABjsnigi-o';
+
+        $(document).ready(function () {
+            $("#searchButton").click(function () {
+                var searchTerm = $("#searchInput").val();
+                $.get("https://www.googleapis.com/youtube/v3/search", {
+                    q: searchTerm,
+                    part: 'snippet',
+                    maxResults: 5, 
+                    key: apiKey
+                }, function (data) {
+                    $("#videoResults").empty();
+                    $.each(data.items, function (index, item) {
+                        var videoTitle = item.snippet.title;
+                        var videoId = item.id.videoId;
+                        var videoUrl = 'https://www.youtube.com/watch?v=' + videoId;
+                        var videoThumbnail = item.snippet.thumbnails.medium.url;
+                        var videoElement = '<div class="video"><a href="' + videoUrl + '" target="_blank"><img src="' + videoThumbnail + '"><h2>' + videoTitle + '</h2></a></div>';
+                        $("#videoResults").append(videoElement);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
